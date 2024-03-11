@@ -108,6 +108,7 @@ async def build_flow(graph_data: dict,
                 if 'collection_name' in kwargs and 'index_name' in vertex.params:
                     vertex.params['index_name'] = kwargs['collection_name']
 
+                # 临时目录处理 tmp_{embeding}_{loader}_{chat_id}
                 if 'collection_name' in vertex.params and not vertex.params.get('collection_name'):
                     vertex.params['collection_name'] = f'tmp_{flow_id}_{chat_id if chat_id else 1}'
                 elif 'index_name' in vertex.params and not vertex.params.get('index_name'):
