@@ -9,7 +9,7 @@ from langchain.schema import AgentFinish, LLMResult
 from langchain.schema.agent import AgentAction
 from langchain.schema.document import Document
 from langchain.schema.messages import BaseMessage
-
+from bisheng.utils.citic_log import citic_logger_error
 
 # https://github.com/hwchase17/chat-langchain/blob/master/callback.py
 class AsyncStreamingLLMCallbackHandler(AsyncCallbackHandler):
@@ -81,6 +81,7 @@ class AsyncStreamingLLMCallbackHandler(AsyncCallbackHandler):
             # This is to emulate the stream of tokens
             await self.websocket.send_json(resp.dict())
         except Exception as e:
+            citic_logger_error(e)
             logger.error(e)
 
     async def on_tool_error(self, error: Union[Exception, KeyboardInterrupt],
@@ -271,6 +272,7 @@ class StreamingLLMCallbackHandler(BaseCallbackHandler):
             coroutine = self.websocket.send_json(resp.dict())
             asyncio.run_coroutine_threadsafe(coroutine, loop)
         except Exception as e:
+            citic_logger_error(e)
             logger.error(e)
 
     def on_retriever_start(self, serialized: Dict[str, Any], query: str, **kwargs: Any) -> Any:

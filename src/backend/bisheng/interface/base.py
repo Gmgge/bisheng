@@ -9,7 +9,7 @@ from bisheng.utils.logger import logger
 from langchain.agents import AgentExecutor
 from langchain.chains.base import Chain
 from pydantic import BaseModel
-
+from bisheng.utils.citic_log import citic_logger_error
 # Assuming necessary imports for Field, Template, and FrontendNode classes
 skip_llm = {'CombineDocsChain'}
 
@@ -35,6 +35,7 @@ class LangChainTypeCreator(BaseModel, ABC):
                     for name, value_dict in type_settings.items()
                 }
             except AttributeError as exc:
+                citic_logger_error(exc)
                 logger.error(exc)
 
                 self.name_docs_dict = {}
@@ -74,6 +75,7 @@ class LangChainTypeCreator(BaseModel, ABC):
     def frontend_node(self, name) -> Union[FrontendNode, None]:
         signature = self.get_signature(name)
         if signature is None:
+            citic_logger_error(f'Node {name} not loaded')
             logger.error(f'Node {name} not loaded')
             return signature
         if not isinstance(signature, FrontendNode):

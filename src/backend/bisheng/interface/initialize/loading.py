@@ -31,7 +31,7 @@ from langchain.vectorstores.base import VectorStore
 from loguru import logger
 from pydantic import ValidationError, create_model
 from pydantic.fields import FieldInfo
-
+from bisheng.utils.citic_log import citic_logger_error
 
 def build_vertex_in_params(params: Dict) -> Dict:
     from bisheng.graph.vertex.base import Vertex
@@ -158,6 +158,7 @@ def instantiate_input_output(node_type, class_object, params, id_dict):
                     chain_obj['input'] = {chains[index].input_keys[0]: preset_question[id][1]}
             else:
                 # give a default input
+                citic_logger_error(f'Report has no question id={id}')
                 logger.error(f'Report has no question id={id}')
                 chain_obj['input'] = {chains[index].input_keys[0]: 'start'}
             chain_list.append(chain_obj)

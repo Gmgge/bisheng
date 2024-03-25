@@ -8,7 +8,7 @@ from bisheng.services.manager import initialize_session_service
 from celery.exceptions import SoftTimeLimitExceeded  # type: ignore
 from loguru import logger
 from rich import print
-
+from bisheng.utils.citic_log import citic_logger_error
 if TYPE_CHECKING:
     from bisheng.graph.vertex.base import Vertex
 
@@ -71,6 +71,7 @@ def process_graph_cached_task(
         print(f'Result object: {result_object}')
         return result_object
     except Exception as e:
+        citic_logger_error(f'Error in process_graph_cached_task: {e}')
         logger.error(f'Error in process_graph_cached_task: {e}')
         # Handle the exception as needed, maybe re-raise or return an error message
         raise

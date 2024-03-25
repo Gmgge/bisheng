@@ -2,7 +2,7 @@ from bisheng.cache.redis import redis_client
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from multiprocessing import Process
 from logging import getLogger
-
+from bisheng.utils.citic_log import citic_logger_error
 logger = getLogger(__name__)
 
 
@@ -16,6 +16,7 @@ class RedisTest:
             redis_client.set(f'zggtest: {p_num}:{t_num}', f'{p_num}-{t_num}')
             redis_client.get(f'zgqtest:{p_num}:{t_num}')
         except Exception as e:
+            citic_logger_error(f'redis-error {p_num}-{t_num}：{e}', exc_info=True)
             logger.error(f'redis-error {p_num}-{t_num}：{e}', exc_info=True)
 
     def exec_more_thread(self, p_num: int):

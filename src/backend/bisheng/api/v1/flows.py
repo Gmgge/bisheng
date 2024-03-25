@@ -16,7 +16,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy import func, or_
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 # build router
 router = APIRouter(prefix='/flows', tags=['Flows'])
 
@@ -159,6 +159,7 @@ async def update_flow(*, flow_id: UUID, flow: FlowUpdate, Authorize: AuthJWT = D
         session.refresh(db_flow)
     try:
         if not get_L2_param_from_flow(db_flow.data, db_flow.id):
+            citic_logger_error(f'flow_id={db_flow.id} extract file_node fail')
             logger.error(f'flow_id={db_flow.id} extract file_node fail')
     except Exception:
         pass

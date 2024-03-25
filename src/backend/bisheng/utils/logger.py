@@ -50,24 +50,24 @@ def configure(log_level: Optional[str] = None, log_file: Optional[Path] = None):
     }],
                      extra={'trace_id': '1'})
 
-    if not log_file:
-        log_file = 'data/bisheng.log'
+    # if not log_file:
+    #     log_file = 'data/bisheng.log'
 
-    log_file = Path(log_file)
-    log_file.parent.mkdir(parents=True, exist_ok=True)
-    log_format_file = '[{time:YYYY-MM-DD at HH:mm:ss.SSS}] [{level.name} process-{process.id}-{thread.id} {name}:{line}] - trace={extra[trace_id]} {message}'  # noqa
-    logger.add(
-        sink=str(log_file),
-        level=log_level.upper(),
-        format=log_format_file,
-        rotation='00:00',  # Log rotation based on file size
-        retention='3 days',
-        serialize=False,
-    )
+    # log_file = Path(log_file)
+    # log_file.parent.mkdir(parents=True, exist_ok=True)
+    # log_format_file = '[{time:YYYY-MM-DD at HH:mm:ss.SSS}] [{level.name} process-{process.id}-{thread.id} {name}:{line}] - trace={extra[trace_id]} {message}'  # noqa
+    # logger.add(
+    #     sink=str(log_file),
+    #     level=log_level.upper(),
+    #     format=log_format_file,
+    #     rotation='00:00',  # Log rotation based on file size
+    #     retention='3 days',
+    #     serialize=False,
+    # )
 
-    logger.debug(f'Logger set up with log level: {log_level}')
-    if log_file:
-        logger.debug(f'Log file: {log_file}')
+    # logger.debug(f'Logger set up with log level: {log_level}')
+    # if log_file:
+    #     logger.debug(f'Log file: {log_file}')
 
 
 class InterceptHandler(logging.Handler):

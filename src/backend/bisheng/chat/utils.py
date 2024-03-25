@@ -14,7 +14,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.schema.document import Document
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 
 async def process_graph(langchain_object,
                         chat_inputs: ChatMessage,
@@ -139,6 +139,7 @@ async def process_source_document(source_document: List[Document], chat_id, mess
             model = model if model_deploy.status == '已上线' else None
             host_base_url = model_deploy.endpoint
         else:
+            citic_logger_error('不能使用配置模型进行关键词抽取，配置不正确')
             logger.error('不能使用配置模型进行关键词抽取，配置不正确')
 
     answer_keywords = extract_answer_keys(answer, model, host_base_url)

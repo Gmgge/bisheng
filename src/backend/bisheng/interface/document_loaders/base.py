@@ -6,7 +6,7 @@ from bisheng.settings import settings
 from bisheng.template.frontend_node.documentloaders import DocumentLoaderFrontNode
 from bisheng.utils.logger import logger
 from bisheng.utils.util import build_template_from_class
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class DocumentLoaderCreator(LangChainTypeCreator):
     type_name: str = 'documentloaders'
@@ -26,6 +26,7 @@ class DocumentLoaderCreator(LangChainTypeCreator):
         except ValueError as exc:
             raise ValueError(f'Documment Loader {name} not found') from exc
         except AttributeError as exc:
+            citic_logger_error(f'Documment Loader {name} not loaded: {exc}')
             logger.error(f'Documment Loader {name} not loaded: {exc}')
             return None
 

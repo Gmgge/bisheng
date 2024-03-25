@@ -13,7 +13,7 @@ from bisheng.processing.process import process_tweaks
 from bisheng.settings import settings
 from bisheng.utils.logger import logger
 from fastapi import APIRouter, WebSocket, status
-
+from bisheng.utils.citic_log import citic_logger_error
 router = APIRouter(prefix='/chat', tags=['Chat'])
 chat_manager = ChatManager()
 flow_data_store = redis_client
@@ -63,6 +63,7 @@ async def union_websocket(flow_id: str,
                 settings.get_from_db('default_operator').get('user'),
                 gragh_data=graph_data)
     except Exception as exc:
+        citic_logger_error(exc)
         logger.error(exc)
         await websocket.close(code=status.WS_1011_INTERNAL_ERROR, reason=str(exc))
 

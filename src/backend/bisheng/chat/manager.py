@@ -20,7 +20,7 @@ from bisheng.utils.util import get_cache_key
 from bisheng_langchain.input_output.output import Report
 from fastapi import WebSocket, WebSocketDisconnect, status
 from loguru import logger
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class ChatHistory(Subject):
 
@@ -296,6 +296,7 @@ class ChatManager:
         status_ = context.get('status')
 
         if payload and status_ != 'init':
+            citic_logger_error('act=input_before_complete payload={} status={}', payload, status_)
             logger.error('act=input_before_complete payload={} status={}', payload, status_)
 
         if not payload:

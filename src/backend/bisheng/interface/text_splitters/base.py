@@ -7,7 +7,7 @@ from bisheng.template.frontend_node.textsplitters import \
     TextSplittersFrontendNode
 from bisheng.utils.logger import logger
 from bisheng.utils.util import build_template_from_class
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class TextSplitterCreator(LangChainTypeCreator):
     type_name: str = 'textsplitters'
@@ -27,6 +27,7 @@ class TextSplitterCreator(LangChainTypeCreator):
         except ValueError as exc:
             raise ValueError(f'Text Splitter {name} not found') from exc
         except AttributeError as exc:
+            citic_logger_error(f'Text Splitter {name} not loaded: {exc}')
             logger.error(f'Text Splitter {name} not loaded: {exc}')
             return None
 

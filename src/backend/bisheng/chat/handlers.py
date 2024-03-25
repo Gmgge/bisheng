@@ -13,7 +13,7 @@ from bisheng.utils.minio_client import MinioClient
 from bisheng.utils.util import get_cache_key
 from bisheng_langchain.chains.autogen.auto_gen import AutoGenChain
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class Handler:
 
@@ -81,6 +81,7 @@ class Handler:
                 select(Report).where(Report.flow_id == client_id).order_by(
                     Report.id.desc())).first()
         if not template:
+            citic_logger_error('template not support')
             logger.error('template not support')
             return
         minio_client = MinioClient()
@@ -263,6 +264,7 @@ class Handler:
                 logger.info('reciever_human_interactive langchain_objct')
                 await langchain_object.stop()
             else:
+                citic_logger_error(f'act=auto_gen act={action}')
                 logger.error(f'act=auto_gen act={action}')
         elif action.lower() == 'continue':
             # autgen_user 对话的时候，进程 wait() 需要换新
@@ -272,6 +274,7 @@ class Handler:
                 start_resp = ChatResponse(type='start')
                 await session.send_json(client_id, chat_id, start_resp)
             else:
+                citic_logger_error(f'act=auto_gen act={action}')
                 logger.error(f'act=auto_gen act={action}')
 
     async def intermediate_logs(self, session: ChatManager, client_id, chat_id, user_id,

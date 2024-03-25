@@ -14,7 +14,7 @@ from bisheng.utils.logger import logger
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import delete
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 # build router
 router = APIRouter(prefix='/server', tags=['server'])
 
@@ -34,6 +34,7 @@ async def add_server(*, server: ServerCreate):
         # await update_model(db_server.endpoint, db_server.server)
         return resp_200(db_server)
     except Exception as exc:
+        citic_logger_error(f'Error add server: {exc}')
         logger.error(f'Error add server: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -48,6 +49,7 @@ async def list_server():
         else:
             return resp_200([])
     except Exception as exc:
+        citic_logger_error(f'Error delete server: {exc}')
         logger.error(f'Error delete server: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -65,6 +67,7 @@ async def delete_server(*, server_id: int):
 
         return resp_200()
     except Exception as exc:
+        citic_logger_error(f'Error delete server: {exc}')
         logger.error(f'Error delete server: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -89,6 +92,7 @@ async def list(*, query: ModelDeployQuery = None):
             model.server = id2server.get(int(model.server)).server
         return resp_200(data=db_model)
     except Exception as exc:
+        citic_logger_error(f'Error add server: {exc}')
         logger.error(f'Error add server: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -110,6 +114,7 @@ async def update_deploy(*, deploy: ModelDeployUpdate):
             session.refresh(db_deploy)
         return resp_200(db_deploy)
     except Exception as exc:
+        citic_logger_error(f'Error add server: {exc}')
         logger.error(f'Error add server: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -142,6 +147,7 @@ async def load(*, deploy_id: dict):
                                                  deploy_id.get('deploy_id'))
         return resp_200()
     except Exception as exc:
+        citic_logger_error(f'Error load model: {exc}')
         logger.error(f'Error load model: {exc}')
         db_deploy.status = '异常'
         db_deploy.remark = error_translate(str(exc))
@@ -172,6 +178,7 @@ async def unload(*, deploy_id: dict):
         return resp_200()
 
     except Exception as exc:
+        citic_logger_error(f'Error add server: {exc}')
         logger.error(f'Error add server: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -196,10 +203,12 @@ async def get_gpu():
                     g.update({'server': service.server})
                 resp.append(gpu)
             else:
+                citic_logger_error(f'gpu_query_none url={url}')
                 logger.error(f'gpu_query_none url={url}')
         return resp_200({'list': resp})
 
     except Exception as exc:
+        citic_logger_error(f'Error add server: {exc}')
         logger.error(f'Error add server: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -210,6 +219,7 @@ def load_model(url: str, data: str, deploy_id: int):
         logger.info(f'load_model={url} result=success')
     else:
         with session_getter() as session:
+            citic_logger_error(f'load_model=fail code={response.status_code}, return={response.text}')
             logger.error(f'load_model=fail code={response.status_code}, return={response.text}')
             db_deploy = session.get(ModelDeploy, deploy_id)
             db_deploy.status = '异常'
@@ -280,6 +290,7 @@ async def update_model(endpoint: str, server_id: int):
         content = resp.text
         models = json.loads(content)
     except Exception as e:
+        citic_logger_error(f'{str(e)}')
         logger.error(f'{str(e)}')
         return []
     with session_getter() as session:

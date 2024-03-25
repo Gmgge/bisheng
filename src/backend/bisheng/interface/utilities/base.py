@@ -10,7 +10,7 @@ from bisheng.utils.util import build_template_from_class
 from langchain import utilities
 from langchain.utilities.sql_database import SQLDatabase
 
-
+from bisheng.utils.citic_log import citic_logger_error
 class UtilityCreator(LangChainTypeCreator):
     type_name: str = 'utilities'
 
@@ -51,6 +51,7 @@ class UtilityCreator(LangChainTypeCreator):
             raise ValueError(f'Utility {name} not found') from exc
 
         except AttributeError as exc:
+            citic_logger_error(f'Utility {name} not loaded: {exc}')
             logger.error(f'Utility {name} not loaded: {exc}')
             return None
 

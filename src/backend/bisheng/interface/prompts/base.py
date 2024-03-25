@@ -8,7 +8,7 @@ from bisheng.template.frontend_node.prompts import PromptFrontendNode
 from bisheng.utils.logger import logger
 from bisheng.utils.util import build_template_from_class
 from langchain import prompts
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class PromptCreator(LangChainTypeCreator):
     type_name: str = 'prompts'
@@ -44,8 +44,10 @@ class PromptCreator(LangChainTypeCreator):
             return build_template_from_class(name, self.type_to_loader_dict)
         except ValueError as exc:
             # raise ValueError("Prompt not found") from exc
+            citic_logger_error(f'Prompt {name} not found: {exc}')
             logger.error(f'Prompt {name} not found: {exc}')
         except AttributeError as exc:
+            citic_logger_error(f'Prompt {name} not loaded: {exc}')
             logger.error(f'Prompt {name} not loaded: {exc}')
         return None
 

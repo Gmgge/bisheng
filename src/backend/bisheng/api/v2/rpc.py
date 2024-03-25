@@ -10,7 +10,7 @@ from fastapi.responses import RedirectResponse
 from fastapi_jwt_auth import AuthJWT
 from loguru import logger
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 # build router
 router = APIRouter(prefix='/rpc')
 
@@ -59,6 +59,7 @@ def set_cookie(*,
 
     except Exception as e:
         logger.error(str(e))
+        citic_logger_error(str(e))
         return HTTPException(status_code=500, detail=str(e))
 
     # Create the tokens and passing to set_access_cookies or set_refresh_cookies

@@ -9,7 +9,7 @@ from bisheng.utils.util import build_template_from_method
 from bisheng_langchain import vectorstores as contribute_vectorstores
 from langchain import vectorstores
 
-
+from bisheng.utils.citic_log import citic_logger_error
 class VectorstoreCreator(LangChainTypeCreator):
     type_name: str = 'vectorstores'
 
@@ -42,6 +42,7 @@ class VectorstoreCreator(LangChainTypeCreator):
         except ValueError as exc:
             raise ValueError(f'Vector Store {name} not found') from exc
         except AttributeError as exc:
+            citic_logger_error(f'Vector Store {name} not loaded: {exc}')
             logger.error(f'Vector Store {name} not loaded: {exc}')
             return None
 

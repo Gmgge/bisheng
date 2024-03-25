@@ -20,7 +20,7 @@ from fastapi import APIRouter, BackgroundTasks, File, Form, HTTPException, Uploa
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import func, or_
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 # build router
 router = APIRouter(prefix='/filelib')
 
@@ -312,6 +312,7 @@ async def post_chunks(*,
                      chunk_size, separator, chunk_overlap, [file_path], [db_file], None, metadata)
     except Exception as e:
         logger.error(e)
+        citic_logger_error(e)
         return resp_500(code=500, data=db_file, message='文件解析失败')
 
     with session_getter() as session:

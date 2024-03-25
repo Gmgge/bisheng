@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, List, Optional
 
 from bisheng.utils.logger import logger
 from pydantic import BaseModel, Field
-
+from bisheng.utils.citic_log import citic_logger_error
 if TYPE_CHECKING:
     from bisheng.graph.vertex.base import Vertex
 

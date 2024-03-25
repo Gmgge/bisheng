@@ -11,7 +11,7 @@ from bisheng.utils.util import build_template_from_class, build_template_from_me
 from bisheng_langchain import agents as bisheng_agents
 from langchain.agents import types
 
-
+from bisheng.utils.citic_log import citic_logger_error
 class AgentCreator(LangChainTypeCreator):
     type_name: str = 'agents'
 
@@ -57,6 +57,7 @@ class AgentCreator(LangChainTypeCreator):
         except ValueError as exc:
             raise ValueError('Agent not found') from exc
         except AttributeError as exc:
+            citic_logger_error(f'Agent {name} not loaded: {exc}')
             logger.error(f'Agent {name} not loaded: {exc}')
             return None
 

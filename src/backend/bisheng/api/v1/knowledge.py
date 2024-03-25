@@ -28,6 +28,8 @@ from pymilvus import Collection
 from sqlalchemy import delete, func, or_
 from sqlmodel import select
 
+from bisheng.utils.citic_log import citic_logger_error
+
 # build router
 router = APIRouter(prefix='/knowledge', tags=['Skills'])
 filetype_load_map = {
@@ -52,6 +54,7 @@ async def upload_file(*, file: UploadFile = File(...)):
             file_path = str(file_path)
         return resp_200(UploadFileResponse(file_path=file_path))
     except Exception as exc:
+        citic_logger_error(f'Error saving file: {exc}')
         logger.error(f'Error saving file: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -67,6 +70,7 @@ async def get_embedding():
             models = list()
         return resp_200({'models': models})
     except Exception as exc:
+        citic_logger_error(f'Error saving file: {exc}')
         logger.error(f'Error saving file: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
@@ -359,6 +363,7 @@ def retry(data: dict, background_tasks: BackgroundTasks, Authorize: AuthJWT = De
                                           callback=None,
                                           extra_meta=file.extra_meta)
             except Exception as e:
+                citic_logger_error(e)
                 logger.error(e)
 
     return resp_200()

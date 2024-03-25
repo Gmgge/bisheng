@@ -24,7 +24,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, UploadFile
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy import delete
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 try:
     from bisheng.worker import process_graph_cached_task
 except ImportError:
@@ -143,6 +143,7 @@ async def process_flow(
             try:
                 graph_data = process_tweaks(graph_data, tweaks)
             except Exception as exc:
+                citic_logger_error(f'Error processing tweaks: {exc}')
                 logger.error(f'Error processing tweaks: {exc}')
 
         # process
@@ -179,6 +180,7 @@ async def process_flow(
                 if hasattr(task_result, 'result'):
                     task_result = task_result.result
             else:
+                citic_logger_error(f'task_id={task_id} exception task result={task}')
                 logger.error(f'task_id={task_id} exception task result={task}')
 
         # 判断溯源
@@ -220,6 +222,7 @@ async def process_flow(
             task_result.update({'answer': result})
         except Exception as e:
             logger.error(e)
+            citic_logger_error(e)
 
         return resp_200(
             ProcessResponse(
@@ -249,6 +252,7 @@ async def create_upload_file(file: UploadFile, flow_id: str):
             file_path=file_path,
         ))
     except Exception as exc:
+        citic_logger_error(f'Error saving file: {exc}')
         logger.error(f'Error saving file: {exc}')
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 

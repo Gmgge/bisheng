@@ -9,7 +9,7 @@ from bisheng_langchain.utils.requests import Requests
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import or_
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 # build router
 router = APIRouter(prefix='/report', tags=['report'])
 mino_prefix = 'report/'
@@ -35,6 +35,7 @@ async def callback(data: dict):
                 select(Report).where(or_(Report.version_key == key,
                                          Report.newversion_key == key))).first()
         if not db_report:
+            citic_logger_error(f'report_callback cannot find the flow_id flow_id={key}')
             logger.error(f'report_callback cannot find the flow_id flow_id={key}')
             raise HTTPException(status_code=500, detail='cannot find the flow_id')
         db_report.object_name = object_name

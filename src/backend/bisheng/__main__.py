@@ -13,6 +13,7 @@ from bisheng.main import setup_app
 from bisheng.settings import settings
 from bisheng.utils.logger import configure, logger
 from dotenv import load_dotenv
+from bisheng.utils.citic_log import citic_logger
 from multiprocess import Process, cpu_count  # type: ignore
 from rich import box
 from rich import print as rprint

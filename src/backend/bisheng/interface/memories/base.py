@@ -8,7 +8,7 @@ from bisheng.template.frontend_node.base import FrontendNode
 from bisheng.template.frontend_node.memories import MemoryFrontendNode
 from bisheng.utils.logger import logger
 from bisheng.utils.util import build_template_from_class, build_template_from_method
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class MemoryCreator(LangChainTypeCreator):
     type_name: str = 'memories'
@@ -44,6 +44,7 @@ class MemoryCreator(LangChainTypeCreator):
         except ValueError as exc:
             raise ValueError('Memory not found') from exc
         except AttributeError as exc:
+            citic_logger_error(f'Memory {name} not loaded: {exc}')
             logger.error(f'Memory {name} not loaded: {exc}')
             return None
 

@@ -21,7 +21,7 @@ from fastapi.responses import StreamingResponse
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy import func
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 router = APIRouter(tags=['Chat'])
 chat_manager = ChatManager()
 flow_data_store = redis_client
@@ -179,6 +179,7 @@ async def chat(
                                                 user_id,
                                                 gragh_data=graph_data)
     except WebSocketException as exc:
+        citic_logger_error(f'Websocket exrror: {str(exc)}')
         logger.error(f'Websocket exrror: {str(exc)}')
         await websocket.close(code=status.WS_1011_INTERNAL_ERROR, reason=str(exc))
     except Exception as exc:
@@ -218,6 +219,7 @@ async def init_build(*, graph_data: dict, flow_id: str):
 
         return resp_200(InitResponse(flowId=flow_id))
     except Exception as exc:
+        citic_logger_error(exc)
         logger.error(exc)
         return HTTPException(status_code=500, detail=str(exc))
 
@@ -231,6 +233,7 @@ async def build_status(flow_id: str):
         return resp_200(BuiltResponse(built=built, ))
 
     except Exception as exc:
+        citic_logger_error(exc)
         logger.error(exc)
         return HTTPException(status_code=500, detail=str(exc))
 
@@ -277,6 +280,7 @@ async def stream_build(flow_id: str, chat_id: Optional[str] = None):
                         yield message
 
             except Exception as e:
+                citic_logger_error(f'Build flow error: {e}')
                 logger.error(f'Build flow error: {e}')
                 flow_data_store.hsetkey(flow_data_key,
                                         'status',
@@ -314,6 +318,7 @@ async def stream_build(flow_id: str, chat_id: Optional[str] = None):
             flow_data_store.hsetkey(flow_data_key, 'status', BuildStatus.SUCCESS.value, expire)
         except Exception as exc:
             logger.exception(exc)
+            citic_logger_error('Error while building the flow: %s', exc)
             logger.error('Error while building the flow: %s', exc)
             flow_data_store.hsetkey(flow_data_key, 'status', BuildStatus.FAILURE.value, expire)
             yield str(StreamData(event='error', data={'error': str(exc)}))
@@ -324,4 +329,5 @@ async def stream_build(flow_id: str, chat_id: Optional[str] = None):
         return StreamingResponse(event_stream(flow_id, chat_id), media_type='text/event-stream')
     except Exception as exc:
         logger.error(exc)
+        citic_logger_error(exc)
         raise HTTPException(status_code=500, detail=str(exc))

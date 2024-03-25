@@ -9,7 +9,7 @@ from bisheng.template.frontend_node.base import FrontendNode
 from bisheng.template.frontend_node.embeddings import EmbeddingFrontendNode
 from bisheng.utils.logger import logger
 from bisheng.utils.util import build_template_from_class
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class EmbeddingCreator(LangChainTypeCreator):
     type_name: str = 'embeddings'
@@ -38,6 +38,7 @@ class EmbeddingCreator(LangChainTypeCreator):
             raise ValueError(f'Embedding {name} not found') from exc
 
         except AttributeError as exc:
+            citic_logger_error(f'Embedding {name} not loaded: {exc}')
             logger.error(f'Embedding {name} not loaded: {exc}')
             return None
 

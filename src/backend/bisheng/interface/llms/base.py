@@ -6,7 +6,7 @@ from bisheng.settings import settings
 from bisheng.template.frontend_node.llms import LLMFrontendNode
 from bisheng.utils.logger import logger
 from bisheng.utils.util import build_template_from_class
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class LLMCreator(LangChainTypeCreator):
     type_name: str = 'llms'
@@ -29,6 +29,7 @@ class LLMCreator(LangChainTypeCreator):
             raise ValueError('LLM not found') from exc
 
         except AttributeError as exc:
+            citic_logger_error(f'LLM {name} not loaded: {exc}')
             logger.error(f'LLM {name} not loaded: {exc}')
             return None
 

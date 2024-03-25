@@ -9,7 +9,7 @@ from redis.backoff import ExponentialBackoff
 from redis.cluster import ClusterNode
 from redis.retry import Retry
 from redis.sentinel import Sentinel
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class RedisClient:
 
@@ -52,6 +52,7 @@ class RedisClient:
                 if not result:
                     raise ValueError('RedisCache could not set the value.')
             else:
+                citic_logger_error('pickle error, value={}', value)
                 logger.error('pickle error, value={}', value)
         except TypeError as exc:
             raise TypeError('RedisCache only accepts values that can be pickled. ') from exc

@@ -9,7 +9,7 @@ from bisheng.utils.util import build_template_from_class, build_template_from_me
 from bisheng_langchain import retrievers as bisheng_retrievers
 from langchain import retrievers
 
-
+from bisheng.utils.citic_log import citic_logger_error
 class RetrieverCreator(LangChainTypeCreator):
     type_name: str = 'retrievers'
 
@@ -51,6 +51,7 @@ class RetrieverCreator(LangChainTypeCreator):
         except ValueError as exc:
             raise ValueError(f'Retriever {name} not found') from exc
         except AttributeError as exc:
+            citic_logger_error(f'Retriever {name} not loaded: {exc}')
             logger.error(f'Retriever {name} not loaded: {exc}')
             return None
 

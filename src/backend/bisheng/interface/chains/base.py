@@ -10,7 +10,7 @@ from bisheng.utils.util import build_template_from_class, build_template_from_me
 from bisheng_langchain import chains as bisheng_chains
 from langchain import chains
 from langchain_experimental import sql
-
+from bisheng.utils.citic_log import citic_logger_error
 # Assuming necessary imports for Field, Template, and FrontendNode classes
 
 
@@ -78,6 +78,7 @@ class ChainCreator(LangChainTypeCreator):
         except ValueError as exc:
             raise ValueError(f'Chain {name} not found: {exc}') from exc
         except AttributeError as exc:
+            citic_logger_error(f'Chain {name} not loaded: {exc}')
             logger.error(f'Chain {name} not loaded: {exc}')
             return None
 

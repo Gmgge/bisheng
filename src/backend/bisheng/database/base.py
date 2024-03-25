@@ -9,7 +9,7 @@ from bisheng.database.service import DatabaseService
 from bisheng.settings import settings
 from bisheng.utils.logger import logger
 from sqlmodel import Session, select
-
+from bisheng.utils.citic_log import citic_logger_error
 db_service: 'DatabaseService' = DatabaseService(settings.database_url)
 
 
@@ -50,6 +50,7 @@ def init_default_data():
             # if the exception involves tables already existing
             # we can ignore it
             if 'already exists' not in str(exc):
+                citic_logger_error(f'Error creating DB and tables: {exc}')
                 logger.error(f'Error creating DB and tables: {exc}')
                 raise RuntimeError('Error creating DB and tables') from exc
         finally:

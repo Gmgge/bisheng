@@ -6,7 +6,7 @@ from bisheng.graph.graph.base import Graph
 from bisheng.utils.logger import logger
 from sqlalchemy import delete
 from sqlmodel import select
-
+from bisheng.utils.citic_log import citic_logger_error
 API_WORDS = ['api', 'key', 'token']
 
 
@@ -73,6 +73,7 @@ async def build_flow(graph_data: dict,
         # Some error could happen when building the graph
         graph = Graph.from_payload(graph_data)
     except Exception as exc:
+        citic_logger_error(exc)
         logger.error(exc)
         error_message = str(exc)
         yield str(StreamData(event='error', data={'error': error_message}))

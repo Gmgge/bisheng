@@ -7,7 +7,7 @@ from bisheng.template.frontend_node.output_parsers import OutputParserFrontendNo
 from bisheng.utils.logger import logger
 from bisheng.utils.util import build_template_from_class, build_template_from_method
 from langchain import output_parsers
-
+from bisheng.utils.citic_log import citic_logger_error
 
 class OutputParserCreator(LangChainTypeCreator):
     type_name: str = 'output_parsers'
@@ -52,8 +52,10 @@ class OutputParserCreator(LangChainTypeCreator):
                 )
         except ValueError as exc:
             # raise ValueError("OutputParser not found") from exc
+            citic_logger_error(f'OutputParser {name} not found: {exc}')
             logger.error(f'OutputParser {name} not found: {exc}')
         except AttributeError as exc:
+            citic_logger_error(f'OutputParser {name} not loaded: {exc}')
             logger.error(f'OutputParser {name} not loaded: {exc}')
         return None
 

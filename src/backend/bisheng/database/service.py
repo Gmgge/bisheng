@@ -4,7 +4,7 @@ from bisheng.services.base import Service
 from loguru import logger
 from sqlalchemy.exc import OperationalError
 from sqlmodel import Session, SQLModel, create_engine
-
+from bisheng.utils.citic_log import citic_logger_error
 if TYPE_CHECKING:
     from sqlalchemy.engine import Engine
 
@@ -35,6 +35,7 @@ class DatabaseService(Service):
 
     def __exit__(self, exc_type, exc_value, traceback):
         if exc_type is not None:  # If an exception has been raised
+            citic_logger_error(f'Session rollback because of exception: {exc_type.__name__} {exc_value}')
             logger.error(f'Session rollback because of exception: {exc_type.__name__} {exc_value}')
             self._session.rollback()
         else:
@@ -64,6 +65,7 @@ class DatabaseService(Service):
             except OperationalError as oe:
                 logger.warning(f'Table {table} already exists, skipping. Exception: {oe}')
             except Exception as exc:
+                citic_logger_error(f'Error creating table {table}: {exc}')
                 logger.error(f'Error creating table {table}: {exc}')
                 raise RuntimeError(f'Error creating table {table}') from exc
 
