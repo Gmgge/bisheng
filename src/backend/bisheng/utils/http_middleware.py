@@ -23,9 +23,9 @@ class CustomMiddleware(BaseHTTPMiddleware):
             system_tag:系统标识，例如'FQWS'
             api_name:api名称
             """
-            uuid_val = str(uuid.uuid1())
+            uuid_val = trace_id
             # ip_address = get_remote_ip(request).split('.')
-            ip_address= request.remote_addr
+            ip_address= request.client.host
             uuid_val , serial_no , process , tran_id = citic_logger.proc_start_log(system_tag , '' , request.url.path , ip_address)
 
             response = await call_next(request)
