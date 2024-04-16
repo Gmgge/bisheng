@@ -164,6 +164,7 @@ async def process_graph_cached(
     built_object = await graph.abuild()
     # memery input
     if hasattr(built_object, 'memory') and built_object.memory is not None:
+        fix_memory_inputs(built_object)
         with session_getter() as session:
             history = session.exec(
                 select(ChatMessage).where(
